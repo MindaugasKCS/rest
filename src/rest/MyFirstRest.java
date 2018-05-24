@@ -1,7 +1,12 @@
 package rest;
 
+import rest.service.StudentsService;
+import rest.utils.DbUtils;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,12 +51,37 @@ public class MyFirstRest {
     @Path("/students")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Student> getStudent(){
-        List<Student>students = new ArrayList<>();
-        students.add(new Student(12, "Mindaugas", "Cernauskas", "+379061235", "mindaugas.cernauskas@.gmail.com"));
+        StudentsService studentsService = new StudentsService();
+        List<Student>students = studentsService.getStudents();
+
+
+
+        /*students.add(new Student(12, "Mindaugas", "Cernauskas", "+379061235", "mindaugas.cernauskas@.gmail.com"));
         students.add(new Student(67, "Jonas", "Jonauskas", "+37903453453235", "jonas@.gmail.com"));
         students.add(new Student(32, "Zigmas", "Karklys", "+3790635335", "kazys@.gmail.com"));
-
+*/
         return students;
     }
+    @GET
+    @Path("/{id}/student")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Student getStudent(@PathParam("id") int id){
+        StudentsService studentsService = new StudentsService();
+        Student st = studentsService.getStudent(id);
+        return st;
+    }
+
+    @GET
+    @Path("/connect")
+    public boolean isConnected(){
+        DbUtils db = new DbUtils();
+        Connection connection = db.createConnection();
+        boolean isConnect = false;
+        if (connection != null){
+            isConnect = true;
+        }
+        return isConnect;
+    }
+
 }
 
